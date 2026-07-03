@@ -1,0 +1,2 @@
+# pruff-technical-test
+
