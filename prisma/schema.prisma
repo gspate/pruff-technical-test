@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String          @id @default(uuid())
+  email         String          @unique
+  name          String?
+  passwordHash  String          @map("password_hash")
+  createdAt     DateTime        @default(now()) @map("created_at")
+
+  searchHistory SearchHistory[]
+  favorites     Favorite[]
+  events        Event[]
+  dailyReports  DailyReportLog[]
+
+  @@map("users")
+}
+
+model SearchHistory {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  queryText    String?  @map("query_text")
+  filters      Json
+  resultsCount Int      @map("results_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("search_history")
+}
+
+model Favorite {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  portal      String
+  externalId  String   @map("external_id")
+  url         String
+  snapshot    Json
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("favorites")
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  userId      String?  @map("user_id")
+  sessionId   String?  @map("session_id")
+  eventType   String   @map("event_type")
+  entityRef   String?  @map("entity_ref")
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("events")
+}
+
+model DailyReportLog {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  reportDate  DateTime @map("report_date") @db.Date
+  status      String
+  sentAt      DateTime? @map("sent_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, reportDate])
+  @@map("daily_report_log")
+}

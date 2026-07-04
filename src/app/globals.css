@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  /* Espaciado base (4px scale es default en Tailwind, no tocamos para mantener compatibilidad) */
+
+  /* Colores */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+
+  /* Sombras y radios */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --shadow-soft: 0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 3px -1px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 4px 16px -4px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+:root {
+  /* Neutros refinados (Zinc style) */
+  --background: #ffffff;
+  --foreground: #09090b;
+  
+  /* Color de Acento: Indigo sofisticado / Azul Proptech */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+
+  /* Superficies secundarias */
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  
+  --border: #e4e4e7;
+
+  /* Constantes de diseño */
+  --radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #09090b;
+    --foreground: #fafafa;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
+    --border: #27272a;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+}

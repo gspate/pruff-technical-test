@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pruff?schema=public
+      - SESSION_SECRET=${SESSION_SECRET:-super-secret-key-change-me}
+      - RESEND_API_KEY=${RESEND_API_KEY:-re_dummy}
+      - INTERNAL_REPORT_SECRET=${INTERNAL_REPORT_SECRET:-secret-for-cron}
+      - REPORT_DESTINATION_EMAIL=${REPORT_DESTINATION_EMAIL:-juanjose@pruff.com,ramiro.galvez@pruff.com}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-setup:
+        condition: service_completed_successfully
+
+  db-setup:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pruff?schema=public
+    command: >
+      sh -c "npm install prisma @prisma/client && npx prisma generate && npx prisma db push && npx prisma db seed"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pruff
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
