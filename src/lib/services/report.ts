@@ -10,7 +10,7 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key');
 // Extraer correos de destino desde variable de entorno, con fallback a los del requerimiento.
 const DESTINATION_EMAILS = process.env.REPORT_DESTINATION_EMAIL
   ? process.env.REPORT_DESTINATION_EMAIL.split(',')
-  : ['juanjose@pruff.com', 'ramiro.galvez@pruff.com'];
+  : ['juanjose@pruff.com', 'ramiro.galvez@pruff.com', 'gustavo.gspate@gmail.com'];
 
 interface ReportUser {
   name?: string | null;

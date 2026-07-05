@@ -33,9 +33,5 @@ docker tag ${REPO_NAME}:latest ${ECR_URI}/${REPO_NAME}:latest
 echo -e "\n[4/5] Subiendo imagen a AWS (Esto puede tardar unos minutos)..."
 docker push ${ECR_URI}/${REPO_NAME}:latest
 
-# 5. Reiniciar Fargate
-echo -e "\n[5/5] Forzando actualización del servicio en Fargate para cargar la nueva imagen..."
-aws ecs update-service --cluster pruff-property-finder-cluster --service pruff-property-finder-service --force-new-deployment --no-cli-pager > /dev/null
-
-echo -e "\n ¡Imagen subida y servidores reiniciando exitosamente!"
-echo "Fargate tardará un par de minutos en apagar los contenedores viejos y levantar los nuevos."
+echo -e "\n ¡Imagen subida exitosamente!"
+echo "Para desplegar estos cambios, ejecuta: ./update-fargate.sh"

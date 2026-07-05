@@ -8,7 +8,7 @@ export const PORTAL_USER_AGENT =
  * Función de rescate: Implementa Exponential Backoff con Jitter
  * Si el portal sufre una caída temporal (503, 504), reintentará progresivamente.
  */
-async function fetchWithRetry(url: string, headers: any, maxRetries = 3): Promise<Response> {
+async function fetchWithRetry(url: string, headers: any, maxRetries = 5): Promise<Response> {
   for (let i = 0; i < maxRetries; i++) {
     const response = await fetch(url, { headers });
     
