@@ -19,9 +19,9 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Generar cliente de Prisma antes del build (requerido para Next.js standalone)
-RUN npx prisma generate
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate
 
-RUN npm run build
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -49,7 +49,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER root
 COPY prisma ./prisma
 COPY package.json ./
-RUN npm install prisma@latest
+RUN npm install prisma@latest --legacy-peer-deps
 COPY start.sh ./
 COPY prisma.config.ts ./
 RUN chmod +x start.sh

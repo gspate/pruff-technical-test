@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+cd "$(dirname "$0")/.."
+
 # ==============================================================================
 # Script de Despliegue de Infraestructura a AWS
 # Ejecuta Terraform Apply inyectando automáticamente las variables del .env

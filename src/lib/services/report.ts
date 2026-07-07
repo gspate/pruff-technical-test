@@ -37,8 +37,8 @@ export function buildReportHtml(user: ReportUser, today: Date, searches: ReportS
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
       <h2 style="color: #000000ff;">Reporte Diario de Búsquedas</h2>
       <p><strong>Usuario:</strong> ${user.name || 'Sin nombre'} (${user.email})</p>
-      <p><strong>Fecha:</strong> ${format(today, "d 'de' MMMM yyyy", { locale: es })}</p>
-      <p><strong>Total de Búsquedas de hoy:</strong> ${searches.length}</p>
+      <p><strong>Fecha del reporte:</strong> ${format(today, "d 'de' MMMM yyyy", { locale: es })}</p>
+      <p><strong>Total de Búsquedas de AYER:</strong> ${searches.length}</p>
       <hr style="border: 1px solid #eee; margin: 20px 0;" />
       <ul style="padding-left: 20px;">
         ${searches
@@ -59,13 +59,17 @@ export function buildReportHtml(user: ReportUser, today: Date, searches: ReportS
 
 export async function runDailyReport(): Promise<{ message: string; results?: DailyReportResult[] }> {
   const today = new Date();
-  const start = startOfDay(today);
-  const end = endOfDay(today);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const start = startOfDay(yesterday);
+  const end = endOfDay(yesterday);
 
   // Generar la fecha truncada (00:00:00) para usar como llave única de idempotencia
+  // Mantenemos "today" como llave porque el reporte se envía "hoy" en la mañana.
   const reportDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
 
-  const todaySearches = await prisma.searchHistory.findMany({
+  const yesterdaySearches = await prisma.searchHistory.findMany({
     where: {
       createdAt: { gte: start, lte: end },
     },
@@ -73,12 +77,12 @@ export async function runDailyReport(): Promise<{ message: string; results?: Dai
     orderBy: { createdAt: 'desc' },
   });
 
-  if (todaySearches.length === 0) {
-    return { message: 'No hay búsquedas registradas hoy. No se enviarán reportes.' };
+  if (yesterdaySearches.length === 0) {
+    return { message: 'No hay búsquedas registradas en el día de ayer. No se enviarán reportes.' };
   }
 
-  const searchesByUser: Record<string, { user: ReportUser; searches: typeof todaySearches }> = {};
-  for (const search of todaySearches) {
+  const searchesByUser: Record<string, { user: ReportUser; searches: typeof yesterdaySearches }> = {};
+  for (const search of yesterdaySearches) {
     if (!searchesByUser[search.userId]) {
       searchesByUser[search.userId] = { user: search.user, searches: [] };
     }

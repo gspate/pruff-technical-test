@@ -21,9 +21,9 @@ echo -e "\n[1/4] Autenticando con AWS ECR..."
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_URI
 
 # 2. Compilar imagen forzando arquitectura linux/amd64 (Para Fargate X86_64)
-# (Es importante el '../' para construir desde la raíz del proyecto)
+# (Es importante el '../../' para construir desde la raíz del proyecto)
 echo -e "\n[2/4] Compilando imagen de Docker (linux/amd64)..."
-docker build --platform linux/amd64 -t $REPO_NAME ../
+docker build --platform linux/amd64 -t $REPO_NAME ../../
 
 # 3. Etiquetar la imagen
 echo -e "\n[3/4] Etiquetando imagen para ECR..."
