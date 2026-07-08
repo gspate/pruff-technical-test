@@ -37,6 +37,7 @@ echo ""
 ./bin/terraform apply \
     -var="resend_api_key=$RESEND_API_KEY" \
     -var="cloudflare_token=$CLOUDFLARE_TUNNEL_TOKEN" \
+    -var="session_secret=$SESSION_SECRET" \
     -var="app_domain=$APP_DOMAIN"
 
 echo ""

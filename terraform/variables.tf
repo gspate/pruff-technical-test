@@ -29,3 +29,9 @@ variable "app_domain" {
   type        = string
   description = "The public domain on Cloudflare (e.g. rentario.cl)"
 }
+
+variable "session_secret" {
+  type        = string
+  description = "JWT Secret for Session Authentication"
+  sensitive   = true
+}

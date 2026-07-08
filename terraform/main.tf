@@ -48,6 +48,7 @@ module "compute" {
   db_endpoint        = module.database.db_endpoint
   resend_api_key     = var.resend_api_key
   cloudflare_token   = var.cloudflare_token
+  session_secret     = var.session_secret
 }
 
 module "events" {

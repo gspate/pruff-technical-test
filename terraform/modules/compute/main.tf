@@ -99,6 +99,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "DB_ENDPOINT"
           value = element(split(":", var.db_endpoint), 0)
+        },
+        {
+          name  = "SESSION_SECRET"
+          value = var.session_secret
         }
       ]
       secrets = [
