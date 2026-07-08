@@ -103,6 +103,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "SESSION_SECRET"
           value = var.session_secret
+        },
+        {
+          name  = "INTERNAL_REPORT_SECRET"
+          value = "secret-for-cron"
         }
       ]
       secrets = [
